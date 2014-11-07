@@ -1,0 +1,39 @@
+#!/usr/bin/env gnuplot
+
+r_ux = "< grep 'Solving for Ux' log | awk '{print $8}' | tr -d ,"
+r_uz = "< grep 'Solving for Uz' log | awk '{print $8}' | tr -d ,"
+r_pr = "< grep 'Solving for p' log | awk '{print $8}' | tr -d ,"
+
+pr = 'postProcessing/probes/0/p'
+rho = 1000
+
+set yrange [1e-6:1e-2]
+set xlabel 'Time, s'
+set ylabel 'Residual'
+set y2label 'Pressure, Pa'
+
+set ytics nomirror format "%.0e"
+set y2tics nomirror
+
+set term pngcairo enhanced color notransparent size 800, 600
+set output 'residuals.png'
+
+plot r_ux w l title 'Ux residual', \
+     r_uz w l title 'Uz residual', \
+     r_pr w l title 'Pressure residual', \
+     pr u 1:(($2 - $3)*rho) ax x1y2 w l lw 2 title 'Pressure drop'
+
+set output 'residuals-zoom.png'
+
+set yrange [1e-6:1e-4]
+set y2range [1.5:2.5]
+rep
+
+set output 'residuals-zoom-2.png'
+
+set xrange [600:]
+set yrange [1e-6:1e-4]
+set y2range [1.8:2.2]
+rep
+
+# pause(-1)

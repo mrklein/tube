@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PID=$(grep -E 'PID\s+:' log | awk '{print $3}')
+
+kill -9 $PID
